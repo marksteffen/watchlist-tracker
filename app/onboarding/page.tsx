@@ -24,7 +24,6 @@ export default async function OnboardingPage() {
   const allProviders = await getAllStreamingProviders('US')
   const providers = allProviders
     .sort((a, b) => a.display_priority - b.display_priority)
-    .slice(0, 100)
     .map(p => ({
       provider_id: p.provider_id,
       provider_name: p.provider_name,
