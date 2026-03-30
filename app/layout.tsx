@@ -5,7 +5,7 @@ import './globals.css'
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
 export const metadata: Metadata = {
-  title: 'Watchlist Tracker — Know when to watch',
+  title: 'Watchlist Tracker — Know when (& where!) to watch',
   description: 'Track when films on your Letterboxd watchlist become available on streaming services.',
 }
 
