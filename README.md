@@ -1,3 +1,11 @@
+## Project Links
+
+- **Live App:** https://watchlist-tracker-eosin.vercel.app/
+- **Git Repo:** https://github.com/marksteffen/watchlist-tracker
+- **Supabase Users:** https://supabase.com/dashboard/project/qcwacyzvwqnqjxqgmrjg/auth/users
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
