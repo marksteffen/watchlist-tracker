@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Watchlist Tracker",
+    "slug": "watchlist-tracker",
+    "scheme": "watchlisttracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#09090b"
+    },
+    "platforms": ["ios", "android"],
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.watchlisttracker.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#09090b"
+      },
+      "package": "com.watchlisttracker.app"
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "plugins": ["expo-router"]
+  }
+}
