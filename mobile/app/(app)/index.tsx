@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   FlatList,
   Pressable,
   RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -85,6 +86,8 @@ interface UserData {
 export default function DashboardScreen() {
   const { session } = useSession()
 
+  const toggleInitializedRef = useRef(false)
+
   const [isLoading, setIsLoading] = useState(true)
   const [films, setFilms] = useState<Film[]>([])
   const [subscribedProviderIds, setSubscribedProviderIds] = useState<Set<number>>(new Set())
@@ -122,7 +125,10 @@ export default function DashboardScreen() {
       (Array.isArray(user.streaming_subscriptions) ? user.streaming_subscriptions : []).map(Number)
     )
     setSubscribedProviderIds(subIds)
-    setMyServicesOnly(subIds.size > 0)
+    if (!toggleInitializedRef.current) {
+      setMyServicesOnly(subIds.size > 0)
+      toggleInitializedRef.current = true
+    }
 
     // Fetch watchlist with streaming availability
     const stale = staleThresholdISO()
@@ -342,15 +348,25 @@ export default function DashboardScreen() {
   }
 
   // Empty state
-  if (films.length === 0) {
+  if (films.length === 0 && !isLoading) {
     return (
-      <View style={styles.container}>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: '#09090b' }}
+        contentContainerStyle={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor="#10b981"
+          />
+        }
+      >
         {ListHeader}
         <View style={styles.emptyState}>
           <Text style={styles.emptyTitle}>No films yet.</Text>
           <Text style={styles.emptySub}>Pull down to sync your watchlist.</Text>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 
