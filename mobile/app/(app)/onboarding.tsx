@@ -37,10 +37,14 @@ export default function OnboardingScreen() {
   const [error, setError] = useState('')
 
   const lastValidatedUsername = useRef('')
+  const validatingRef = useRef('')
 
   // On mount: check if already onboarded
   useEffect(() => {
-    if (!session) return
+    if (!session) {
+      setCheckingOnboarded(false)
+      return
+    }
 
     async function checkOnboarded() {
       const { data } = await supabase
@@ -87,11 +91,15 @@ export default function OnboardingScreen() {
     if (!trimmed) return
     if (trimmed === lastValidatedUsername.current && usernameStatus === 'valid') return
 
+    validatingRef.current = trimmed
     setUsernameStatus('checking')
     const valid = await apiValidateUsername(trimmed)
-    setUsernameStatus(valid ? 'valid' : 'invalid')
-    if (valid) {
-      lastValidatedUsername.current = trimmed
+    // Only apply result if the username hasn't changed since this request was fired
+    if (validatingRef.current === trimmed) {
+      setUsernameStatus(valid ? 'valid' : 'invalid')
+      if (valid) {
+        lastValidatedUsername.current = trimmed
+      }
     }
   }
 
@@ -100,6 +108,8 @@ export default function OnboardingScreen() {
     if (usernameStatus !== 'idle') {
       setUsernameStatus('idle')
     }
+    // Invalidate any in-flight validation so its result won't be applied
+    validatingRef.current = ''
   }
 
   function toggleProvider(id: number) {
