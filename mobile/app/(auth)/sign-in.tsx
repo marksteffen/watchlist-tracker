@@ -29,7 +29,9 @@ export default function SignIn() {
       setLoading(false)
       return
     }
-    // On success: do nothing — session change drives the redirect automatically
+    // On success: navigation is driven by onAuthStateChange in the layout.
+    // Clear loading in case there's any delay before the redirect unmounts this screen.
+    setLoading(false)
   }
 
   return (

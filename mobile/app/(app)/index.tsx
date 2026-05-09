@@ -175,7 +175,9 @@ export default function DashboardScreen() {
         .map((sa) => ({
           provider_id: sa.provider_id,
           provider_name: sa.provider_name,
-          provider_logo_path: sa.provider_logo_path,
+          provider_logo_path: sa.provider_logo_path
+            ? `https://image.tmdb.org/t/p/w45${sa.provider_logo_path}`
+            : null,
           first_seen_at: sa.first_seen_at,
         }))
 
