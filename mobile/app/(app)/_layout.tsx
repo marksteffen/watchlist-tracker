@@ -20,23 +20,27 @@ export default function AppLayout() {
       if (isSyncingRef.current) return
       if (Date.now() - lastSyncRef.current < SYNC_DEBOUNCE_MS && lastSyncRef.current !== 0) return
 
-      // Check if onboarding is complete before syncing
-      const { data: profile } = await supabase
-        .from('users')
-        .select('letterboxd_username')
-        .eq('id', session!.user.id)
-        .single()
+      isSyncingRef.current = true  // set immediately, before any await
 
-      if (!profile?.letterboxd_username) return  // not onboarded yet
+      try {
+        // Check if onboarding is complete before syncing
+        const { data: profile } = await supabase
+          .from('users')
+          .select('letterboxd_username')
+          .eq('id', session!.user.id)
+          .single()
 
-      isSyncingRef.current = true
-      const result = await syncAll(session!.access_token)
-      isSyncingRef.current = false
-      lastSyncRef.current = Date.now()
+        if (!profile?.letterboxd_username) return
 
-      if (!result.ok) {
-        setSyncStatus(result.error ?? 'Sync failed')
-        setTimeout(() => setSyncStatus(null), 4000)
+        const result = await syncAll(session!.access_token)
+        lastSyncRef.current = Date.now()
+
+        if (!result.ok) {
+          setSyncStatus(result.error ?? 'Sync failed')
+          setTimeout(() => setSyncStatus(null), 4000)
+        }
+      } finally {
+        isSyncingRef.current = false
       }
     }
 
