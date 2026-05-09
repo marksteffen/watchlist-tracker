@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase-server'
 import { DashboardClient } from '@/components/DashboardClient'
-import { STALE_DAYS } from '@shared/constants'
+import { PROVIDER_ACTIVE_WINDOW_DAYS } from '@shared/constants'
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient()
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
 
   // Filter: only include streaming entries that were seen within the last 30 days
   // (a proxy for "still available" — if last_seen_at is old, the provider may have dropped it)
-  const staleThreshold = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000).toISOString()
+  const staleThreshold = new Date(Date.now() - PROVIDER_ACTIVE_WINDOW_DAYS * 24 * 60 * 60 * 1000).toISOString()
 
   const films = (watchlistRows || []).map((row: any) => {
     const film = row.films

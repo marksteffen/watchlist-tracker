@@ -4,13 +4,13 @@ import { useState, useTransition } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Provider } from '@shared/types'
+import type { ProviderOption } from '@shared/types'
 
 interface Props {
   userId: string
   initialUsername: string
   initialSubscriptions: number[]
-  providers: Provider[]
+  providers: ProviderOption[]
 }
 
 export function SettingsClient({ userId, initialUsername, initialSubscriptions, providers }: Props) {

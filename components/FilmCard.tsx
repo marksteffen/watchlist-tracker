@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { ProviderBadge } from './ProviderBadge'
-import { Provider } from '@shared/types'
+import type { StreamingProvider } from '@shared/types'
 import { NEW_THRESHOLD_DAYS } from '@shared/constants'
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   year: number | null
   posterUrl: string | null
   letterboxdSlug: string
-  providers: Provider[]
+  providers: StreamingProvider[]
   subscribedProviderIds: Set<number>
   showAllProviders: boolean
 }
@@ -34,7 +34,7 @@ export function FilmCard({
     ? providers
     : providers.filter(p => subscribedProviderIds.has(p.provider_id))
 
-  const hasNewProvider = visibleProviders.some(p => p.first_seen_at != null && isNew(p.first_seen_at))
+  const hasNewProvider = visibleProviders.some(p => isNew(p.first_seen_at))
   const isAvailableOnMyServices = subscribedProviderIds.size > 0
     ? providers.some(p => subscribedProviderIds.has(p.provider_id))
     : providers.length > 0
@@ -86,7 +86,7 @@ export function FilmCard({
             {visibleProviders.map(p => (
               <div key={p.provider_id} className="relative">
                 <ProviderBadge providerName={p.provider_name} logoPath={p.provider_logo_path} />
-                {p.first_seen_at != null && isNew(p.first_seen_at) && (
+                {isNew(p.first_seen_at) && (
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-zinc-900" />
                 )}
               </div>
