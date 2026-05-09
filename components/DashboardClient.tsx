@@ -3,22 +3,8 @@
 import { useState, useTransition } from 'react'
 import { FilmCard } from './FilmCard'
 import { useRouter } from 'next/navigation'
-
-interface Provider {
-  provider_id: number
-  provider_name: string
-  provider_logo_path: string | null
-  first_seen_at: string
-}
-
-interface Film {
-  id: string
-  title: string
-  year: number | null
-  poster_url: string | null
-  letterboxd_slug: string
-  providers: Provider[]
-}
+import { NEW_THRESHOLD_DAYS } from '@shared/constants'
+import type { Provider, Film } from '@shared/types'
 
 interface Props {
   films: Film[]
@@ -34,8 +20,6 @@ function Spinner() {
     <span className="w-3.5 h-3.5 rounded-full border-2 border-zinc-500 border-t-white animate-spin inline-block" />
   )
 }
-
-const NEW_THRESHOLD_DAYS = 14
 
 function isNew(firstSeenAt: string): boolean {
   return (Date.now() - new Date(firstSeenAt).getTime()) / (1000 * 60 * 60 * 24) <= NEW_THRESHOLD_DAYS
