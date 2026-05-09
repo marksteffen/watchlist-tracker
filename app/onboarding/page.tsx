@@ -27,7 +27,7 @@ export default async function OnboardingPage() {
     .map(p => ({
       provider_id: p.provider_id,
       provider_name: p.provider_name,
-      logo_url: logoUrl(p.logo_path, 'w45'),
+      provider_logo_path: logoUrl(p.logo_path, 'w45'),
     }))
 
   return (

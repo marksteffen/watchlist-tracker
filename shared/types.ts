@@ -2,7 +2,7 @@ export interface Provider {
   provider_id: number
   provider_name: string
   provider_logo_path: string | null
-  first_seen_at: string
+  first_seen_at?: string
 }
 
 export interface Film {

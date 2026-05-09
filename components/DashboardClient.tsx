@@ -38,8 +38,8 @@ export function DashboardClient({ films, subscribedProviderIds, lastSynced, user
   const sorted = [...films].sort((a, b) => {
     if (sortMode === 'alpha') return a.title.localeCompare(b.title)
     if (sortMode === 'new_first') {
-      const aHasNew = a.providers.some(p => (!myServicesOnly || subscribedSet.has(p.provider_id)) && isNew(p.first_seen_at))
-      const bHasNew = b.providers.some(p => (!myServicesOnly || subscribedSet.has(p.provider_id)) && isNew(p.first_seen_at))
+      const aHasNew = a.providers.some(p => (!myServicesOnly || subscribedSet.has(p.provider_id)) && p.first_seen_at != null && isNew(p.first_seen_at))
+      const bHasNew = b.providers.some(p => (!myServicesOnly || subscribedSet.has(p.provider_id)) && p.first_seen_at != null && isNew(p.first_seen_at))
       if (aHasNew && !bHasNew) return -1
       if (!aHasNew && bHasNew) return 1
     }
@@ -75,7 +75,7 @@ export function DashboardClient({ films, subscribedProviderIds, lastSynced, user
 
   const newCount = films.filter(f =>
     f.providers.some(p =>
-      (!myServicesOnly || subscribedSet.has(p.provider_id)) && isNew(p.first_seen_at)
+      (!myServicesOnly || subscribedSet.has(p.provider_id)) && p.first_seen_at != null && isNew(p.first_seen_at)
     )
   ).length
 

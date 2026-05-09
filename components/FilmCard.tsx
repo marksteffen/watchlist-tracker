@@ -2,13 +2,8 @@
 
 import Image from 'next/image'
 import { ProviderBadge } from './ProviderBadge'
-
-interface Provider {
-  provider_id: number
-  provider_name: string
-  provider_logo_path: string | null
-  first_seen_at: string
-}
+import { Provider } from '@shared/types'
+import { NEW_THRESHOLD_DAYS } from '@shared/constants'
 
 interface Props {
   title: string
@@ -19,8 +14,6 @@ interface Props {
   subscribedProviderIds: Set<number>
   showAllProviders: boolean
 }
-
-const NEW_THRESHOLD_DAYS = 14
 
 function isNew(firstSeenAt: string): boolean {
   const diffMs = Date.now() - new Date(firstSeenAt).getTime()
@@ -41,7 +34,7 @@ export function FilmCard({
     ? providers
     : providers.filter(p => subscribedProviderIds.has(p.provider_id))
 
-  const hasNewProvider = visibleProviders.some(p => isNew(p.first_seen_at))
+  const hasNewProvider = visibleProviders.some(p => p.first_seen_at != null && isNew(p.first_seen_at))
   const isAvailableOnMyServices = subscribedProviderIds.size > 0
     ? providers.some(p => subscribedProviderIds.has(p.provider_id))
     : providers.length > 0
@@ -93,7 +86,7 @@ export function FilmCard({
             {visibleProviders.map(p => (
               <div key={p.provider_id} className="relative">
                 <ProviderBadge providerName={p.provider_name} logoPath={p.provider_logo_path} />
-                {isNew(p.first_seen_at) && (
+                {p.first_seen_at != null && isNew(p.first_seen_at) && (
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-zinc-900" />
                 )}
               </div>

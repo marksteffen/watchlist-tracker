@@ -4,12 +4,7 @@ import { useState, useTransition } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-
-interface Provider {
-  provider_id: number
-  provider_name: string
-  logo_url: string | null
-}
+import { Provider } from '@shared/types'
 
 interface Props {
   userId: string
@@ -161,9 +156,9 @@ export function OnboardingClient({ userId, initialUsername, initialSubscriptions
                         : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-zinc-500'
                     }`}
                   >
-                    {p.logo_url && (
+                    {p.provider_logo_path && (
                       <div className="relative w-6 h-6 rounded overflow-hidden flex-shrink-0">
-                        <Image src={p.logo_url} alt={p.provider_name} fill className="object-cover" sizes="24px" />
+                        <Image src={p.provider_logo_path} alt={p.provider_name} fill className="object-cover" sizes="24px" />
                       </div>
                     )}
                     <span className="truncate">{p.provider_name}</span>
