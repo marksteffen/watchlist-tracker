@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, createServiceRoleClient } from '@/lib/supabase-server'
+import { createServiceRoleClient } from '@/lib/supabase-server'
+import { getUserFromRequest } from '@/lib/get-user-from-request'
 import { fetchWatchlist } from '@/lib/letterboxd'
 import { searchFilm, posterUrl } from '@/lib/tmdb'
 
 export async function POST(request: NextRequest) {
-  const supabase = await createServerSupabaseClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const { user, error: authError } = await getUserFromRequest(request)
+  if (!user) return NextResponse.json({ error: authError ?? 'Unauthorized' }, { status: 401 })
 
   // Get user's Letterboxd username
   const db = createServiceRoleClient()
