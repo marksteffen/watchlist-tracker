@@ -15,14 +15,9 @@ import { router } from 'expo-router'
 import { useSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 import { fetchStreamingProviders, syncWatchlist, validateUsername as apiValidateUsername } from '@/lib/api'
+import type { ProviderWithLogo } from '@/lib/api'
 import { ProviderPicker } from '@/components/ProviderPicker'
 import { Spinner } from '@/components/Spinner'
-
-interface ProviderWithLogo {
-  provider_id: number
-  provider_name: string
-  logo_url: string | null
-}
 
 export default function OnboardingScreen() {
   const { session } = useSession()

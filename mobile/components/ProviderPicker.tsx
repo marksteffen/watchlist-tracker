@@ -1,10 +1,5 @@
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
-
-interface ProviderWithLogo {
-  provider_id: number
-  provider_name: string
-  logo_url: string | null
-}
+import type { ProviderWithLogo } from '@/lib/api'
 
 interface Props {
   providers: ProviderWithLogo[]

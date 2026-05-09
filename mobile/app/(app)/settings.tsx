@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -14,15 +13,10 @@ import { router } from 'expo-router'
 import { useSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 import { fetchStreamingProviders, validateUsername as apiValidateUsername } from '@/lib/api'
+import type { ProviderWithLogo } from '@/lib/api'
 import { syncAll } from '@/lib/sync'
 import { ProviderPicker } from '@/components/ProviderPicker'
 import { Spinner } from '@/components/Spinner'
-
-interface ProviderWithLogo {
-  provider_id: number
-  provider_name: string
-  logo_url: string | null
-}
 
 export default function SettingsScreen() {
   const { session } = useSession()
@@ -79,11 +73,14 @@ export default function SettingsScreen() {
     })
   }, [])
 
+  const isUsernameUnchanged =
+    username.trim() !== '' &&
+    initialUsername.trim() !== '' &&
+    username.trim() === initialUsername.trim()
+
   // Derive effective username status: if unchanged from DB, treat as valid
   function getEffectiveStatus() {
-    if (username.trim() === initialUsername.trim() && initialUsername.trim() !== '') {
-      return 'valid'
-    }
+    if (isUsernameUnchanged) return 'valid'
     return usernameStatus
   }
 
@@ -92,7 +89,7 @@ export default function SettingsScreen() {
     if (!trimmed) return
 
     // If unchanged from initial, skip validation
-    if (trimmed === initialUsername.trim() && initialUsername.trim() !== '') {
+    if (isUsernameUnchanged) {
       setUsernameStatus('valid')
       lastValidatedUsername.current = trimmed
       return
@@ -175,9 +172,15 @@ export default function SettingsScreen() {
 
       if (usernameChanged) {
         // New username = new watchlist, trigger sync (non-fatal)
-        await syncAll(session.access_token)
+        const syncResult = await syncAll(session.access_token)
         setInitialUsername(trimmedUsername)
         lastValidatedUsername.current = trimmedUsername
+        if (!syncResult.ok) {
+          setSaveMessage('Saved — watchlist will sync shortly')
+          setTimeout(() => setSaveMessage(''), 4000)
+          setSaving(false)
+          return
+        }
       }
 
       setSaveMessage('Saved')
@@ -197,7 +200,7 @@ export default function SettingsScreen() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator color="#10b981" />
+        <Spinner />
       </View>
     )
   }
@@ -283,7 +286,7 @@ export default function SettingsScreen() {
 
           {loadingProviders ? (
             <View style={styles.providersLoading}>
-              <ActivityIndicator color="#10b981" />
+              <Spinner />
             </View>
           ) : (
             <ProviderPicker
@@ -309,7 +312,7 @@ export default function SettingsScreen() {
           disabled={!canSave}
         >
           {saving ? (
-            <ActivityIndicator color="#000" />
+            <Spinner color="#000" />
           ) : (
             <Text style={styles.saveBtnText}>Save settings</Text>
           )}

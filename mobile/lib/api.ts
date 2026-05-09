@@ -43,7 +43,13 @@ export async function validateUsername(username: string): Promise<boolean> {
   }
 }
 
-export async function fetchStreamingProviders(): Promise<Array<{ provider_id: number; provider_name: string; logo_url: string | null }>> {
+export interface ProviderWithLogo {
+  provider_id: number
+  provider_name: string
+  logo_url: string | null
+}
+
+export async function fetchStreamingProviders(): Promise<ProviderWithLogo[]> {
   try {
     const res = await fetch(`${apiBase}/api/streaming-providers`)
     if (!res.ok) return []
